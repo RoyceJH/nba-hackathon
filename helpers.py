@@ -27,4 +27,12 @@ def convert_cols_to_int(df, columns):
     :return: Modified df
     """
     for column in columns:
-        df[column] = df[column].astype(int)
+        column_to_update = ''
+        if column in df:
+            column_to_update = column
+        # For event_code dataframe, the columns are formatted as nested strings
+        elif '"{}"'.format(column) in df:
+            column_to_update = '"{}"'.format(column)
+
+        if column_to_update:
+            df[column_to_update] = df[column_to_update].astype(int)
