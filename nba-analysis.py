@@ -61,7 +61,7 @@ def update_stats(player_breakdown, stats_to_update):
     for player, points in stats_to_update.items():
         try:
             player_breakdown[player]
-        except:
+        except KeyError:
             player_breakdown[player] = 0
 
         player_breakdown[player] += points
@@ -90,7 +90,7 @@ def get_start_period_players(on_court_players, game_lineup, game_id, period):
     for _, player in period_starting_lineup.iterrows():
         try:
             on_court_players[player['Team_id']].append(player['Person_id'])
-        except:
+        except KeyError:
             on_court_players[player['Team_id']] = [player['Person_id']]
 
 
