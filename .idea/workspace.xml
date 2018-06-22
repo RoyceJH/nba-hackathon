@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0605739c-884b-45b2-bdf0-b4a864906605" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/nba-analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/nba-analysis.py" afterDir="false" />
-    </list>
+    <list default="true" id="0605739c-884b-45b2-bdf0-b4a864906605" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -26,7 +24,7 @@
         <entry file="file://$PROJECT_DIR$/nba-analysis.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="106">
-              <caret line="61" lean-forward="true" selection-start-line="61" selection-end-line="61" />
+              <caret line="34" selection-start-line="34" selection-end-line="34" />
             </state>
           </provider>
         </entry>
@@ -193,8 +191,8 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/nba-analysis.py</url>
-          <line>62</line>
-          <option name="timeStamp" value="40" />
+          <line>34</line>
+          <option name="timeStamp" value="42" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -204,11 +202,16 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="42" />
+      <option name="time" value="43" />
     </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateCodeFragment">
+      <expression>
+        <expression-string>type(stats_to_update)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>typeof(stats_to_update)</expression-string>
         <language-id>Python</language-id>
@@ -252,17 +255,6 @@
       <expression>
         <expression-string>for team, players in on_court_players:
     print([team, players])</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>on_court_players</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>for game_id, play in play_by_play.iterrows():
-    print((game_id, play))</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
@@ -369,7 +361,7 @@
     <entry file="file://$PROJECT_DIR$/nba-analysis.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="106">
-          <caret line="61" lean-forward="true" selection-start-line="61" selection-end-line="61" />
+          <caret line="34" selection-start-line="34" selection-end-line="34" />
         </state>
       </provider>
     </entry>
