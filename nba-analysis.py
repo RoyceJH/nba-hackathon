@@ -49,8 +49,8 @@ def calculate_adv_stats(game, event_code, game_lineup):
         _, _, event_description, action_description = lookup_event(event_code, play)
 
         if 'Start Period' in event_description:
-            get_start_period_players(on_court_players, game_lineup, game_id, play['Period'])
-        elif 'Made Shot' in event_description:
+            set_start_period_players(on_court_players, game_lineup, game_id, play['Period'])
+        elif 'Made Shot' in event_description or 'Technical' in action_description:
             points = play['Option1']
             scoring_team = play['Team_id']
             stats_to_update = calculate_stats_to_update(on_court_players, points, scoring_team)
@@ -82,7 +82,8 @@ def calculate_adv_stats(game, event_code, game_lineup):
                     replace_players(on_court_players, delayed_subs['leaving'][idx], delayed_subs['incoming'][idx])
 
                 delayed_subs = reset_delayed_substitutions()
-
+        elif 'Technical' in action_description:
+            print('hi')
     return player_breakdown
 
 
@@ -111,7 +112,11 @@ def calculate_stats_to_update(on_court_players, points, scoring_team):
 
 
 
-def get_start_period_players(on_court_players, game_lineup, game_id, period):
+def set_start_period_players(on_court_players, game_lineup, game_id, period):
+    # All players start off the court
+    for team in on_court_players:
+        on_court_players[team] = []
+
     period_starting_lineup = game_lineup.loc[
         (game_lineup['Game_id'] == game_id) & (game_lineup['Period'] == period)
     ]
