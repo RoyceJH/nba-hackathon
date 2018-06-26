@@ -63,7 +63,7 @@ def calculate_adv_stats(game, event_code, game_lineup):
                 leaving_player = play['Person1']
                 incoming_player = play['Person2']
                 replace_players(on_court_players, leaving_player, incoming_player)
-        elif 'Free Throw' in event_description and 'Technical' not in event_description:
+        elif 'Free Throw' in event_description and 'Technical' not in action_description:
             shot_number, total_shot = extract_free_throw_shots(action_description)
             points = play['Option1']
             scoring_team = play['Team_id']
