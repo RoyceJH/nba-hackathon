@@ -1,3 +1,5 @@
+import re
+
 from helpers import convert_txt_to_df, convert_cols_to_int
 
 EVENT_CODE_PATH = './NBA Hackathon - Event Codes.txt'
@@ -24,7 +26,6 @@ def generate_data():
     convert_cols_to_int(play_by_play, NUMERICAL_COLUMNS)
     convert_cols_to_int(game_lineup, NUMERICAL_COLUMNS)
 
-
     all_games = play_by_play['Game_id'].unique()
 
     for game in all_games:
@@ -40,7 +41,7 @@ def calculate_adv_stats(game, event_code, game_lineup):
     on_court_players = {}
     game_id = game['Game_id'][0]
     halt_player_change = False
-    delayed_substitution = {}
+    delayed_subs = {'leaving': [], 'incoming': []}
 
     # get_start_period_players(on_court_players, game_lineup, game['Game_id'][0], 1)
 
@@ -49,13 +50,42 @@ def calculate_adv_stats(game, event_code, game_lineup):
 
         if 'Start Period' in event_description:
             get_start_period_players(on_court_players, game_lineup, game_id, play['Period'])
-        elif 'Foul' in event_description:
-            halt_player_change = True
         elif 'Made Shot' in event_description:
             points = play['Option1']
             scoring_team = play['Team_id']
             stats_to_update = calculate_stats_to_update(on_court_players, points, scoring_team)
             update_stats(player_breakdown, stats_to_update)
+        elif 'Substitution' in event_description:
+            if halt_player_change:
+                delayed_subs['leaving'].append(play['Person1'])
+                delayed_subs['incoming'].append(play['Person2'])
+            else:
+                leaving_player = play['Person1']
+                incoming_player = play['Person2']
+                replace_players(on_court_players, leaving_player, incoming_player)
+        elif 'Free Throw' in event_description and 'Technical' not in event_description:
+            shot_number, total_shot = extract_free_throw_shots(action_description)
+            points = play['Option1']
+            scoring_team = play['Team_id']
+            stats_to_update = calculate_stats_to_update(on_court_players, points, scoring_team)
+            update_stats(player_breakdown, stats_to_update)
+
+            if shot_number < total_shot:
+                # Want to set true to delay substitutions when free throws are not done
+                halt_player_change = True
+            elif shot_number == total_shot:
+                # Want to confirm that free throws are done and substitutions can now be made
+                halt_player_change = False
+
+                # Should be the same number of incoming and outgoing players and indexed by the same team
+                for idx in range(len(delayed_subs['leaving'])):
+                    replace_players(on_court_players, delayed_subs['leaving'][idx], delayed_subs['incoming'][idx])
+
+                delayed_subs = reset_delayed_substitutions()
+
+    return player_breakdown
+
+
 
 def update_stats(player_breakdown, stats_to_update):
     for player, points in stats_to_update.items():
@@ -63,9 +93,7 @@ def update_stats(player_breakdown, stats_to_update):
             player_breakdown[player]
         except KeyError:
             player_breakdown[player] = 0
-
         player_breakdown[player] += points
-        print('hi')
 
 
 def calculate_stats_to_update(on_court_players, points, scoring_team):
@@ -100,6 +128,35 @@ def lookup_event(event_code, play):
     ]
     return event.values.flatten()
 
+
+def replace_players(on_court_players, leaving, incoming):
+    # The team_id in the event of a substitution does not refer to the team of the substituted player
+    for team_id in on_court_players:
+        team = on_court_players[team_id]
+
+        if leaving in team:
+            team.remove(leaving)
+            team.append(incoming)
+            break
+
+
+def extract_free_throw_shots(description):
+    """
+    Extract the shot number and total shots of free throws
+    :param description: Ie: `Free Throw 1 of 2`
+    :return: 1, 2
+    """
+
+    try:
+        a, b = description.strip('"').strip().split('Free Throw ')[1].split(' of ')
+    except:
+        print('hi')
+    return description.strip('"').strip().split('Free Throw ')[1].split(' of ')
+
+
+def reset_delayed_substitutions():
+    """Sets default format for delayed_subs"""
+    return {'leaving': [], 'incoming': []}
 
 
 
